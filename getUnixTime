@@ -1,0 +1,63 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Initialize_variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "TicksTo1970",
+                            "type": "Integer",
+                            "value": "@ticks('1970-01-01')"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            },
+            "Initialize_variable_2": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "TicksToNow",
+                            "type": "Integer",
+                            "value": "@ticks(utcNow())"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Response": {
+                "inputs": {
+                    "body": "@div(sub(variables('TicksToNow'),variables('TicksTo1970')),10000000)",
+                    "statusCode": 200
+                },
+                "runAfter": {
+                    "Initialize_variable_2": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Response"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {},
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "method": "GET",
+                    "schema": {}
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {}
+}
